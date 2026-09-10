@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruleta de Balonmano</title>
+<style>
+:root{
+  --bg:#f6f8fb;
+  --panel:#ffffff;
+  --text:#1f2937;
+  --muted:#667085;
+  --border:#d8dee8;
+  --accent:#003b70;
+  --accent2:#0077b6;
+  --success:#e9f8ef;
+  --danger:#fff0f0;
+  --purple:#8b5cf6;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:1100px;margin:0 auto;padding:24px}
+.header{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;padding:26px;border-radius:20px;margin-bottom:20px;text-align:center
+}
+.header h1{margin:0 0 6px;font-size:34px}
+.header p{margin:0;font-size:17px}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:20px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:20px}
+.toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:12px}
+.label{font-size:13px;color:var(--muted)}
+.score{font-size:30px;font-weight:800;text-align:right}
+.wheelbox{max-width:470px;margin:0 auto;position:relative}
+.pointer{position:absolute;top:-4px;left:50%;transform:translateX(-50%);font-size:32px;z-index:5}
+svg{width:100%;height:auto;display:block}
+#wheelGroup{transform-origin:200px 200px}
+.centerCircle{fill:#fff;stroke:#d8dee8;stroke-width:4}
+.btn{
+  width:100%;border:0;border-radius:14px;padding:14px 18px;font-weight:800;font-size:17px;
+  cursor:pointer;background:var(--accent);color:#fff;margin-top:14px
+}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.secondary{background:#fff;color:var(--text);border:1px solid var(--border);margin-top:0;width:auto}
+.questionbox{background:#f8fafc;border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+.questionbox h2{margin:6px 0 0;font-size:22px;line-height:1.3}
+.answers{display:grid;gap:10px}
+.answer{
+  width:100%;text-align:left;border:1px solid var(--border);border-radius:12px;
+  padding:13px 14px;background:#fff;color:var(--text);font-weight:700;font-size:16px;cursor:pointer
+}
+.answer:hover{background:#f8fafc}
+.answer:disabled{opacity:.72;cursor:not-allowed}
+.feedback{
+  margin-top:14px;border:1px dashed var(--border);border-radius:12px;padding:14px;min-height:52px;
+  background:#fff;color:var(--muted)
+}
+.feedback.ok{background:var(--success);color:#166534;border-style:solid}
+.feedback.no{background:var(--danger);color:#991b1b;border-style:solid}
+.status{margin-top:10px;text-align:center;color:var(--muted);font-size:14px}
+.bottom{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:20px;flex-wrap:wrap}
+.progress{font-size:14px;color:var(--muted)}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:800;background:#eef2f7;color:#344054}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.header h1{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>🤾 Ruleta de Balonmano</h1>
+    <p>Gira, responde y suma puntos. Las preguntas no se repiten.</p>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="toprow">
+        <div>
+          <div class="label">Mini concurso en clase</div>
+          <strong>Gira la ruleta</strong>
+        </div>
+        <div>
+          <div class="label" style="text-align:right">Puntos</div>
+          <div id="score" class="score">0</div>
+        </div>
+      </div>
+
+      <div class="wheelbox">
+        <div class="pointer">▼</div>
+        <svg viewBox="0 0 400 400" role="img" aria-label="Ruleta con categorías de balonmano">
+          <g id="wheelGroup">
+            <path d="M200 200 L200 20 A180 180 0 0 1 327.3 72.7 Z" fill="#dbeafe"/>
+            <path d="M200 200 L327.3 72.7 A180 180 0 0 1 380 200 Z" fill="#dcfce7"/>
+            <path d="M200 200 L380 200 A180 180 0 0 1 327.3 327.3 Z" fill="#fef3c7"/>
+            <path d="M200 200 L327.3 327.3 A180 180 0 0 1 200 380 Z" fill="#f3e8ff"/>
+            <path d="M200 200 L200 380 A180 180 0 0 1 72.7 327.3 Z" fill="#fee2e2"/>
+            <path d="M200 200 L72.7 327.3 A180 180 0 0 1 20 200 Z" fill="#dbeafe"/>
+            <path d="M200 200 L20 200 A180 180 0 0 1 72.7 72.7 Z" fill="#dcfce7"/>
+            <path d="M200 200 L72.7 72.7 A180 180 0 0 1 200 20 Z" fill="#fef3c7"/>
+            <circle cx="200" cy="200" r="49" class="centerCircle"/>
+            <text x="258" y="66" text-anchor="middle" font-size="14" font-weight="700">Reglamento</text>
+            <text x="337" y="136" text-anchor="middle" font-size="14" font-weight="700">Técnica</text>
+            <text x="337" y="272" text-anchor="middle" font-size="14" font-weight="700">Táctica</text>
+            <text x="258" y="344" text-anchor="middle" font-size="14" font-weight="700">Posiciones</text>
+            <text x="142" y="344" text-anchor="middle" font-size="14" font-weight="700">Reglamento</text>
+            <text x="64" y="272" text-anchor="middle" font-size="14" font-weight="700">Técnica</text>
+            <text x="64" y="136" text-anchor="middle" font-size="14" font-weight="700">Táctica</text>
+            <text x="142" y="66" text-anchor="middle" font-size="14" font-weight="700">Sorpresa</text>
+            <text x="200" y="208" text-anchor="middle" font-size="22">🤾</text>
+          </g>
+        </svg>
+      </div>
+
+      <button id="spinBtn" class="btn" type="button">🎯 GIRAR RULETA</button>
+      <div id="categoryResult" class="status" aria-live="polite">Pulsa “GIRAR RULETA” para empezar.</div>
+    </section>
+
+    <section class="card">
+      <div class="label">Pregunta</div>
+      <div class="questionbox">
+        <span id="questionCategory" class="badge">—</span>
+        <h2 id="questionText">Gira la ruleta para obtener una pregunta.</h2>
+      </div>
+      <div id="answers" class="answers"></div>
+      <div id="feedback" class="feedback" aria-live="polite">Aquí aparecerá el resultado.</div>
+    </section>
+  </div>
+
+  <div class="card bottom">
+    <div>
+      <strong>Modo clase</strong>
+      <div class="progress" id="progress">0 de 15 preguntas utilizadas</div>
+    </div>
+    <button id="resetBtn" class="btn secondary" type="button">Reiniciar juego</button>
+  </div>
+</div>
+
+<script>
+(() => {
+const categories = ['Reglamento','Técnica','Táctica','Posiciones','Reglamento','Técnica','Táctica','Sorpresa'];
+
+const questions = [
+ {cat:'Reglamento',q:'¿Cuántos jugadores de un mismo equipo pueden estar simultáneamente en pista?',a:['5','6','7','8'],c:2,e:'Son 7 jugadores: habitualmente 6 jugadores de campo y 1 portero.'},
+ {cat:'Reglamento',q:'¿Cuántos pasos puede dar un jugador con balón sin botarlo?',a:['2','3','4','5'],c:1,e:'La regla básica permite hasta 3 pasos.'},
+ {cat:'Reglamento',q:'¿Cuánto tiempo puede retener un jugador el balón sin pasarlo, lanzarlo o botarlo?',a:['2 segundos','3 segundos','5 segundos','10 segundos'],c:1,e:'El límite básico es 3 segundos.'},
+ {cat:'Reglamento',q:'¿A qué distancia está la línea de área de portería?',a:['5 m','6 m','7 m','9 m'],c:1,e:'El área de portería está delimitada por la línea de 6 metros.'},
+ {cat:'Reglamento',q:'¿Desde qué distancia se ejecuta un lanzamiento de 7 metros?',a:['6 m','7 m','8 m','9 m'],c:1,e:'Se ejecuta desde la línea de 7 metros.'},
+
+ {cat:'Técnica',q:'¿Qué acción permite avanzar manteniendo el control del balón?',a:['Blocaje','Bote','Marcaje','Pantalla'],c:1,e:'El bote permite progresar manteniendo el control del balón.'},
+ {cat:'Técnica',q:'¿Qué pase se realiza habitualmente con una mano por encima del hombro?',a:['Pase clásico','Pase de pecho','Pase picado','Pase de tacón'],c:0,e:'El pase clásico se ejecuta habitualmente con una mano por encima del hombro.'},
+ {cat:'Técnica',q:'¿Cuál de estas acciones es una técnica de lanzamiento?',a:['Lanzamiento en suspensión','Repliegue','Basculación','Marcaje'],c:0,e:'El lanzamiento en suspensión es una técnica ofensiva de lanzamiento.'},
+
+ {cat:'Táctica',q:'¿Qué significa una defensa 6:0?',a:['Seis defensores próximos a 6 m','Cinco defensores y uno avanzado','Tres defensores y tres avanzados','Seis atacantes sin portero'],c:0,e:'En el sistema 6:0, los seis defensores forman una línea cercana al área.'},
+ {cat:'Táctica',q:'¿Qué acción ofensiva busca crear una línea de pase o espacio útil?',a:['Desmarque','Marcaje','Repliegue','Blocaje defensivo'],c:0,e:'El desmarque busca generar una línea de pase o un espacio útil en ataque.'},
+ {cat:'Táctica',q:'¿Qué es el contraataque?',a:['Una acción ofensiva rápida tras recuperar el balón','Una defensa cerrada','Un lanzamiento de 7 metros','Un cambio de portero'],c:0,e:'El contraataque es una transición ofensiva rápida tras recuperar la posesión.'},
+
+ {cat:'Posiciones',q:'¿Qué jugador se sitúa normalmente cerca de 6 metros entre defensores?',a:['Central','Extremo','Pivote','Portero'],c:2,e:'El pivote actúa habitualmente cerca de la línea de 6 metros.'},
+ {cat:'Posiciones',q:'¿Qué jugador suele organizar el ataque desde la zona central?',a:['Pivote','Extremo','Central','Portero'],c:2,e:'El central suele dirigir y organizar el juego ofensivo.'},
+ {cat:'Posiciones',q:'¿Qué jugador ocupa normalmente una zona lateral y próxima a la línea de banda?',a:['Extremo','Pivote','Central','Portero'],c:0,e:'El extremo ocupa habitualmente las zonas laterales del ataque.'},
+
+ {cat:'Sorpresa',q:'⭐ RETO DOBLE: ¿Cuánto dura, en categoría sénior, un partido reglamentario de balonmano?',a:['2 × 20 min','2 × 25 min','2 × 30 min','3 × 20 min'],c:2,e:'Un partido sénior reglamentario se disputa en dos tiempos de 30 minutos.',double:true}
+];
+
+let remaining = questions.map((_,i)=>i);
+let score = 0;
+let rotation = 0;
+let locked = false;
+
+const wheelGroup = document.getElementById('wheelGroup');
+const spinBtn = document.getElementById('spinBtn');
+const resetBtn = document.getElementById('resetBtn');
+const categoryResult = document.getElementById('categoryResult');
+const questionCategory = document.getElementById('questionCategory');
+const questionText = document.getElementById('questionText');
+const answers = document.getElementById('answers');
+const feedback = document.getElementById('feedback');
+const scoreEl = document.getElementById('score');
+const progress = document.getElementById('progress');
+
+function updateProgress(){
+  progress.textContent = (questions.length - remaining.length) + ' de ' + questions.length + ' preguntas utilizadas';
+}
+
+function resetFeedback(){
+  feedback.className = 'feedback';
+  feedback.textContent = 'Elige una respuesta.';
+}
+
+function chooseQuestion(preferredCategory){
+  let candidates = remaining.filter(i => questions[i].cat === preferredCategory);
+  if (!candidates.length) candidates = remaining.slice();
+  if (!candidates.length) return null;
+  const idx = candidates[Math.floor(Math.random()*candidates.length)];
+  remaining = remaining.filter(i => i !== idx);
+  updateProgress();
+  return questions[idx];
+}
+
+function renderQuestion(item){
+  if (!item){
+    questionCategory.textContent = 'FIN';
+    questionText.textContent = '¡Habéis completado todas las preguntas!';
+    answers.innerHTML = '';
+    feedback.className = 'feedback ok';
+    feedback.textContent = '🏆 Puntuación final: ' + score + ' puntos.';
+    spinBtn.disabled = true;
+    return;
+  }
+
+  questionCategory.textContent = item.cat + (item.double ? ' · DOBLE PUNTUACIÓN' : '');
+  questionText.textContent = item.q;
+  answers.innerHTML = '';
+  resetFeedback();
+  locked = false;
+
+  item.a.forEach((label,idx)=>{
+    const btn = document.createElement('button');
+    btn.type='button';
+    btn.className='answer';
+    btn.textContent=String.fromCharCode(65+idx)+') '+label;
+    btn.addEventListener('click',()=>{
+      if(locked) return;
+      locked=true;
+      [...answers.querySelectorAll('button')].forEach(b=>b.disabled=true);
+      if(idx===item.c){
+        const pts=item.double?2:1;
+        score+=pts;
+        scoreEl.textContent=score;
+        feedback.className='feedback ok';
+        feedback.textContent='✅ ¡Correcto! +' + pts + ' punto' + (pts>1?'s. ':' . ') + item.e;
+      }else{
+        feedback.className='feedback no';
+        feedback.textContent='❌ No es correcta. ' + item.e;
+      }
+    });
+    answers.appendChild(btn);
+  });
+}
+
+function spin(){
+  if(!remaining.length){renderQuestion(null);return;}
+  spinBtn.disabled=true;
+  const index=Math.floor(Math.random()*categories.length);
+  const slice=45;
+  const extra=5+Math.floor(Math.random()*3);
+  const target=360-(index*slice+slice/2);
+  rotation += extra*360 + target - (rotation%360);
+
+  wheelGroup.style.transition='transform 2.4s cubic-bezier(.15,.65,.2,1)';
+  wheelGroup.style.transform='rotate('+rotation+'deg)';
+  categoryResult.textContent='Girando…';
+
+  setTimeout(()=>{
+    const cat=categories[index];
+    categoryResult.textContent='🎉 Categoría: '+cat;
+    const item=chooseQuestion(cat);
+    renderQuestion(item);
+    spinBtn.disabled=!remaining.length;
+  },2450);
+}
+
+spinBtn.addEventListener('click',spin);
+
+resetBtn.addEventListener('click',()=>{
+  remaining=questions.map((_,i)=>i);
+  score=0; rotation=0; locked=false;
+  scoreEl.textContent='0';
+  wheelGroup.style.transition='none';
+  wheelGroup.style.transform='rotate(0deg)';
+  categoryResult.textContent='Pulsa “GIRAR RULETA” para empezar.';
+  questionCategory.textContent='—';
+  questionText.textContent='Gira la ruleta para obtener una pregunta.';
+  answers.innerHTML='';
+  feedback.className='feedback';
+  feedback.textContent='Aquí aparecerá el resultado.';
+  spinBtn.disabled=false;
+  updateProgress();
+});
+
+updateProgress();
+})();
+</script>
+</body>
+</html>
